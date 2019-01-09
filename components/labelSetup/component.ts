@@ -26,6 +26,7 @@ export default class LabelSetupComponent extends BaseComponent {
             repo: this.app.config.repo
         })).data;
 
+        let updateNum = 0;
         let updatePromises = labels.map(label => {
             let param: any = {
                 owner: this.app.config.owner,
@@ -40,15 +41,26 @@ export default class LabelSetupComponent extends BaseComponent {
                 delete param.name;
                 if (oldLabel.color === label.color) delete param.color;
                 if (oldLabel.description === label.description) delete param.description;
+                if (!param.color && !param.description) {
+                    // no need to update
+                    return Promise.resolve(null);
+                }
+                updateNum++;
                 return conn.issues.updateLabel(param);
             } else {
+                updateNum++;
                 return conn.issues.createLabel(param);
             }
         });
+        if (updateNum === 0) {
+            this.logger.debug(`No need to update labels`);
+            return;
+        }
+        this.logger.debug(`Goona update ${updateNum} labels for project`);
         let results = await Promise.all(updatePromises);
         results.forEach(res => {
-            if (res.status >= 300) {
-                this.logger.error(`Error happend when update a ${JSON.stringify(res)}`);
+            if (res && res.status && res.status >= 300) {
+                this.logger.error(`Error happened when update a ${JSON.stringify(res)}`);
             }
         });
 

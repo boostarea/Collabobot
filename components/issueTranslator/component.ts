@@ -3,6 +3,7 @@ import { IssueTranslatorComponentConfig } from "./config";
 import { IssueOpenedEvent } from "../../types/eventTypes";
 import * as os from "os";
 import { IssuesUpdateParams } from "@octokit/rest";
+import { TranslateResult } from "../../services/translate/types";
 
 export default class IssueTranslatorComponent extends BaseComponent {
     private config: IssueTranslatorComponentConfig;
@@ -19,13 +20,18 @@ export default class IssueTranslatorComponent extends BaseComponent {
             let titleTransResult = await this.app.translateService.translate(title, this.config.to);
             if (!titleTransResult) return;
 
-            let bodyArray = body.split(os.EOL);
-            let bodyTransResult = await this.app.translateService.translateArray(bodyArray, this.config.to);
+            let bodyArray = body.split(os.EOL); // body maybe none.
+            let bodyTransResult: TranslateResult[] = [];
+            if (bodyArray.length === 1) {
+                bodyTransResult = [ await this.app.translateService.translate(bodyArray[0], this.config.to) ];
+            } if (bodyArray.length > 1) {
+                bodyTransResult = await this.app.translateService.translateArray(bodyArray, this.config.to);
+            }
             if (!bodyTransResult) return;
 
             if (titleTransResult.detectedSourceLanguage === this.config.to &&
                 bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to).length === 0) {
-                    this.logger.debug(`No translate need for issue ${issue.number}`);
+                    this.logger.debug(`No translate need for issue #${issue.number}`);
                     return;
             }
 

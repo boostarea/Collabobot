@@ -17,25 +17,20 @@ config.labels = [
         name: "kind/bug",
         description: "Category issues or prs related to bug.",
         color: "e11d21",
-        keywords: [ "bug", "bugreport", "bug-report" ]
+        keywords: [ "bug", "bugreport", "bug-report", "bugfix", "cannot", "can not", "can't",
+		    "error", "failure", "failed to ", "fix:" ]
     },
     {
         name: "kind/enhancement",
         description: "Category issues or prs related to pull request.",
         color: "c7def8",
-        keywords: [ "feature", "feature request", "feature-request" ]
-    },
-    {
-        name: "kind/document",
-        description: "Category issues or prs related to document.",
-        color: "795548",
-        keywords: [ "doc", "docs", "documents", "document" ]
+        keywords: [ "feature", "feature request", "feature-request", "feature_request" ]
     },
     {
         name: "kind/question",
         description: "Category issues related to questions or problems",
         color: "f1ee18",
-        keywords: [ "question", "problem", "support" ]
+        keywords: [ "question", "problem", "confusion", "how to", "where to" ]
     },
     {
         name: "kind/discussion",
@@ -97,7 +92,15 @@ config.labels = [
         name: "priority/important-longterm-P3",
         description: "Quite important, may need sometime to complete.",
         color: "eb6420"
+    },
+
+    // Area
+    {
+        name: "area/doc",
+        description: "Category issues or prs related to document.",
+        color: "0366d6",
+        keywords: [ "doc", "docs", "documents", "document" ]
     }
 ];
 
-export { LabelSetupComponentConfig, config };
+export { Label, LabelSetupComponentConfig, config };
