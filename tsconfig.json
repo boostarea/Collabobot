@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es6",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "moduleResolution": "node",
+        "preserveConstEnums": true,
+        "sourceMap": false,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        }
+    },
+    "include": [
+        "./**/*"
+    ]
+}

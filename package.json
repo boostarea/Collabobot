@@ -1,0 +1,54 @@
+{
+  "name": "collabobot",
+  "version": "0.1.0",
+  "description": "A GitHub collaborate robot.",
+  "main": "app.js",
+  "scripts": {
+    "check": "sh ./common_tools/check.sh",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "init": "sh ./common_tools/init_tools.sh",
+    "start": "node app.js",
+    "clean": "find . -path ./node_modules -prune -o -name '*.js' ! -name 'custom_config.js' -type f -print0 | xargs -0 rm",
+    "wc": "find . -path ./node_modules -prune -o -name '*.ts' -type f -print | xargs cat | wc -l",
+    "new-service": "tsc && node ./utils/component_generator.js -s true -n",
+    "new-component": "tsc && node ./utils/component_generator.js -c true -n",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Frankzhaopku/Collabobot.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Collaborate",
+    "Robot"
+  ],
+  "author": "FrankZhao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Frankzhaopku/Collabobot/issues"
+  },
+  "homepage": "https://github.com/Frankzhaopku/Collabobot#readme",
+  "dependencies": {
+    "@octokit/rest": "^16.3.0",
+    "@types/args": "^3.0.0",
+    "@types/body-parser": "^1.17.0",
+    "@types/express": "github:types/express",
+    "@types/lodash": "^4.14.119",
+    "@types/node": "^10.12.18",
+    "@types/node-schedule": "^1.2.2",
+    "args": "^5.0.0",
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
+    "express": "^4.16.4",
+    "google-translate": "^2.2.0",
+    "lodash": "^4.17.11",
+    "markdown-link-check": "^3.7.2",
+    "markdownlint-cli": "^0.13.0",
+    "node-schedule": "^1.3.1",
+    "p-wait-for": "^2.0.1",
+    "pope": "^2.0.2",
+    "typescript": "^3.1.6"
+  }
+}
