@@ -112,6 +112,12 @@ export class GithubConnectionPool {
                 // modify star request header to get the timestamp
                 options.headers.accept = "application/vnd.github.v3.star+json";
             }
+            if (options.url === "/repos/:owner/:repo/labels"
+                || options.url === "/repos/:owner/:repo/labels/:name"
+                || options.url === "/repos/:owner/:repo/labels/:current_name") {
+                // modify label request header to support label description in list, get, update
+                options.headers.accept = "application/vnd.github.symmetra-preview+json";
+            }
         });
         return connection;
     }
