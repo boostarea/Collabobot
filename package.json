@@ -4,15 +4,15 @@
   "description": "A GitHub collaborate robot.",
   "main": "app.js",
   "scripts": {
-    "check": "sh ./common_tools/check.sh",
+    "check": "npm run clean && sh ./common_tools/check.sh",
     "build": "tsc",
     "prestart": "npm run build",
     "init": "sh ./common_tools/init_tools.sh",
     "start": "node app.js",
     "clean": "find . -path ./node_modules -prune -o -name '*.js' ! -name 'custom_config.js' -type f -print0 | xargs -0 rm",
     "wc": "find . -path ./node_modules -prune -o -name '*.ts' -type f -print | xargs cat | wc -l",
-    "new-service": "tsc && node ./utils/component_generator.js -s true -n",
-    "new-component": "tsc && node ./utils/component_generator.js -c true -n",
+    "new-service": "tsc && node ./utils/component_generator.js -s -n",
+    "new-component": "tsc && node ./utils/component_generator.js -c -n",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
