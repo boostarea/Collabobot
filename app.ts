@@ -83,6 +83,7 @@ class App implements IApp {
                     if ("config" in c) {
                         this.logger.debug(`[App] Register config for ${configPath}, config=${JSON.stringify(c.config)}`);
                         this.config.register(name, c.config);
+                        if (this.config[name].init) this.config[name].init();
                     } else {
                         this.logger.error(`[App] No config export found in ${configPath}`);
                     }
