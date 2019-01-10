@@ -21,12 +21,19 @@ export default class IssueTranslatorComponent extends BaseComponent {
             if (!titleTransResult) return;
 
             let bodyArray = body.split(os.EOL); // body maybe none.
-            let bodyTransResult: TranslateResult[] = [];
-            if (bodyArray.length === 1) {
-                bodyTransResult = [ await this.app.translateService.translate(bodyArray[0], this.config.to) ];
-            } if (bodyArray.length > 1) {
-                bodyTransResult = await this.app.translateService.translateArray(bodyArray, this.config.to);
-            }
+            let bodyTransResult: TranslateResult[] = await Promise.all(bodyArray.map(line => {
+                if (IssueTranslatorComponent.hasChineseChar(line)) {
+                    // has chinese character, try translate
+                    return this.app.translateService.translate(line, this.config.to);
+                } else {
+                    // no chinese character, return origin
+                    Promise.resolve({
+                        translatedText: line,
+                        originalText: line,
+                        detectedSourceLanguage: this.config.to
+                    });
+                }
+            }));
             if (!bodyTransResult) return;
 
             if (titleTransResult.detectedSourceLanguage === this.config.to &&
@@ -47,7 +54,7 @@ export default class IssueTranslatorComponent extends BaseComponent {
 
             if (bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to && r.translatedText !== r.originalText).length !== 0) {
                 updateParams.body = bodyArray.map((line, index) => {
-                    if (bodyTransResult[index].detectedSourceLanguage === this.config.to) return line;
+                    if (bodyTransResult[index].detectedSourceLanguage === this.config.to && bodyTransResult[index].translatedText !== bodyTransResult[index].originalText) return line;
                     return `${bodyTransResult[index].translatedText}${os.EOL}// ${line}`;
                 }).join(os.EOL) + this.config.notice;
             }
@@ -57,6 +64,10 @@ export default class IssueTranslatorComponent extends BaseComponent {
         });
 
         this.logger.debug(`IssueTranslatorComponent init done.`);
+    }
+
+    private static hasChineseChar(str: string) {
+        return /.*[\u4e00-\u9fa5]+.*/.test(str);
     }
 
 }
