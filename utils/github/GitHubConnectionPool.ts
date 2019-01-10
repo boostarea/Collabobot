@@ -232,8 +232,16 @@ export class GithubConnectionPool {
 
     public getTokenStatus(): any {
         return this.pool.map(con => {
+            let retToken = "";
+            for (let i = 0; i < con.token.length; i++) {
+                if (i < 3 || i >= con.token.length - 3) {
+                    retToken += con.token[i];
+                } else {
+                    retToken += "*";
+                }
+            }
             return {
-                token: con.token,
+                token: retToken,
                 remain: con.ratelimitRemaining,
                 reset: con.ratelimitReset
             }

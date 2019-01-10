@@ -12,16 +12,14 @@ export default class IssueAutoLabelComponent extends BaseComponent {
         await super.init(app);
         this.config = this.app.config.getConfig(IssueAutoLabelComponentConfig);
         let labelSetupConfig = this.app.config.getConfig(LabelSetupComponentConfig);
-        this.labels = labelSetupConfig.labels;
-        if (labelSetupConfig.customLabels) this.labels = this.labels.concat(labelSetupConfig.customLabels);
-        this.labels = this.labels.filter(l => l.keywords && l.keywords.length > 0);
+        this.labels = labelSetupConfig.labels.filter(l => l.keywords && l.keywords.length > 0);
         this.logger.debug(`IssueAutoLabelComponent init done.`);
     }
 
     run(): void {
         this.app.eventService.on(IssueOpenedEvent, async event => {
             let issue = event.issue;
-            let title = issue.title;
+            let title = issue.title.toLowerCase();
             let attachLabels: string[] = [];
             this.labels.forEach(label => {
                 label.keywords.forEach(keyword => {
@@ -39,7 +37,7 @@ export default class IssueAutoLabelComponent extends BaseComponent {
                 repo: this.app.config.repo,
                 number: issue.number,
                 labels: attachLabels
-            });
+            }).catch(this.logger.error);
             this.logger.debug(`Auto label for issue #${issue.number} done, lalels=${JSON.stringify(attachLabels)}`);
         });
     }

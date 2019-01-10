@@ -30,7 +30,7 @@ export default class IssueTranslatorComponent extends BaseComponent {
             if (!bodyTransResult) return;
 
             if (titleTransResult.detectedSourceLanguage === this.config.to &&
-                bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to).length === 0) {
+                bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to && r.translatedText !== r.originalText).length === 0) {
                     this.logger.debug(`No translate need for issue #${issue.number}`);
                     return;
             }
@@ -45,11 +45,11 @@ export default class IssueTranslatorComponent extends BaseComponent {
                 updateParams.title = titleTransResult.translatedText;
             }
 
-            if (bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to).length !== 0) {
+            if (bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to && r.translatedText !== r.originalText).length !== 0) {
                 updateParams.body = bodyArray.map((line, index) => {
                     if (bodyTransResult[index].detectedSourceLanguage === this.config.to) return line;
                     return `${bodyTransResult[index].translatedText}${os.EOL}// ${line}`;
-                }).join("") + this.config.notice;
+                }).join(os.EOL) + this.config.notice;
             }
 
             await conn.issues.update(updateParams);

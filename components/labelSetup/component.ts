@@ -16,9 +16,6 @@ export default class LabelSetupComponent extends BaseComponent {
 
     public async setup(): Promise<void> {
         let labels = this.config.labels;
-        if (this.config.customLabels) {
-            labels = labels.concat(this.config.customLabels);
-        }
 
         let conn = await this.app.githubService.client.getConnection();
         let currentLabels = (await conn.issues.listLabelsForRepo({
@@ -57,19 +54,22 @@ export default class LabelSetupComponent extends BaseComponent {
             return;
         }
         this.logger.debug(`Goona update ${updateNum} labels for project`);
-        let results = await Promise.all(updatePromises);
-        results.forEach(res => {
-            if (res && res.status && res.status >= 300) {
-                this.logger.error(`Error happened when update a ${JSON.stringify(res)}`);
-            }
-        });
+        await Promise.all(updatePromises).then(results => {
+            results.forEach(res => {
+                if (res && res.status && res.status >= 300) {
+                    this.logger.error(`Error happened when update a ${JSON.stringify(res)}`);
+                }
+            });
+        }).catch(this.logger.error);
 
-        currentLabels = (await conn.issues.listLabelsForRepo({
+        await conn.issues.listLabelsForRepo({
             owner: this.app.config.owner,
             repo: this.app.config.repo
-        })).data;
-        this.logger.debug(`Labels setup for ${this.app.config.alias} done, setup label=${JSON.stringify(currentLabels.map(l => {
-            return { name: l.name, description: l.description, color: l.color }
-        }))}`);
+        }).then(newLabels => {
+            this.logger.debug(`Labels setup for ${this.app.config.alias} done, setup label=${JSON.stringify(newLabels.data.map(l => {
+                return { name: l.name, description: l.description, color: l.color }
+            }))}`);
+        }).catch(this.logger.error);
+        
     }
 }

@@ -8,6 +8,18 @@ type Label = {
 class LabelSetupComponentConfig {
     labels: Label[];
     customLabels: Label[];
+    init(): void {
+        this.labels.forEach(label => {
+            let customLabelIndex = this.customLabels.findIndex(l => l.name === label.name);
+            if (customLabelIndex < 0) return;
+            let customLabel = this.customLabels[customLabelIndex];
+            if (customLabel.color) label.color = customLabel.color;
+            if (customLabel.description) label.description = customLabel.description;
+            if (customLabel.keywords) label.keywords = customLabel.keywords;
+            this.customLabels.splice(customLabelIndex, 1);
+        });
+        this.labels = this.labels.concat(this.customLabels);
+    }
 }
 
 let config = new LabelSetupComponentConfig();
@@ -21,10 +33,16 @@ config.labels = [
 		    "error", "failure", "failed to ", "fix:" ]
     },
     {
-        name: "kind/enhancement",
-        description: "Category issues or prs related to pull request.",
+        name: "kind/feature",
+        description: "Category issues or prs related to feature request.",
         color: "c7def8",
         keywords: [ "feature", "feature request", "feature-request", "feature_request" ]
+    },
+    {
+        name: "kind/enhancement",
+        description: "Category issues or prs related to enhancement.",
+        color: "93edba",
+        keywords: [ "enhancement", "refactor" ]
     },
     {
         name: "kind/question",
@@ -79,27 +97,40 @@ config.labels = [
 
     // Priority
     {
-        name: "priority/important-urgent-P1",
+        name: "priority/urgent",
         description: "Most important, need to be worked on as soon as possible",
         color: "e11d21"
     },
     {
-        name: "priority/important-soon-P2",
+        name: "priority/high",
         description: "Very important, need to be worked with soon but not very urgent",
         color: "eb6420"
     },
     {
-        name: "priority/important-longterm-P3",
-        description: "Quite important, may need sometime to complete.",
-        color: "eb6420"
+        name: "priority/normal",
+        description: "normal , may need sometime to complete.",
+        color: "f7be99"
+    },
+    {
+        name: "priority/low",
+        description: "Not important, can be finish by new contributors.",
+        color: "67a8f7"
     },
 
     // Area
     {
-        name: "area/doc",
+        name: "area/document",
         description: "Category issues or prs related to document.",
         color: "0366d6",
         keywords: [ "doc", "docs", "documents", "document" ]
+    },
+
+    // weekly report
+    {
+        name: "weekly-report",
+        description: "Auto generated weekly report.",
+        color: "0366d6",
+        keywords: [ "weeklyreport", "weekly report", "weekly-report" ]
     }
 ];
 
