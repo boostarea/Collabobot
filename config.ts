@@ -53,7 +53,11 @@ let config: Config = {
 
 // ****** Please make sure your custom config file is at this path ******
 let customConfigPath = "./custom_config.js";
-if (fs.existsSync(path.join(__dirname, customConfigPath))) {
+// if config file path passed from command line, use this to replace default path
+if (process.argv[2]) {
+    customConfigPath = process.argv[2];
+}
+if (fs.existsSync(customConfigPath)) {
     let customConfig = require(customConfigPath);
     let checkConfig = (index: string) => {
         if (!customConfig[index]) {
@@ -67,7 +71,7 @@ if (fs.existsSync(path.join(__dirname, customConfigPath))) {
         config.alias = config.repo;
     }
 } else {
-    throw "No config file found";
+    throw `No config file found in ${customConfigPath}`;
 }
 
 export { Config, config };
