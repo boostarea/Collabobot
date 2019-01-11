@@ -2,6 +2,7 @@ import { BaseComponent, IApp } from "../../types/basicTypes";
 import { RepoDataUpdateEvent, IssueOpenedEvent, NewUserOpenIssueEvent, IssueClosedEvent, PullRequestClosedEvent, NewContributorEvent, PullRequestOpenedEvent, NewUserOpenPullRequestEvent } from "../../types/eventTypes";
 import { RepoData, UserData } from "../../types/dataTypes";
 import { DataProviderConfig } from "./config";
+import { GithubConnectionPool } from "../../utils/github/GitHubConnectionPool";
 
 export default class DataService extends BaseComponent {
     public ready: boolean;
@@ -9,6 +10,7 @@ export default class DataService extends BaseComponent {
     public repoData: RepoData;
     public userMap: Map<string, UserData>;
     private config: DataProviderConfig;
+    private client: GithubConnectionPool;
     private processing: boolean;
 
     async init(app: IApp): Promise<void> {
@@ -24,6 +26,10 @@ export default class DataService extends BaseComponent {
     }
 
     run(): void {
+        this.client = this.app.githubService.client;
+        if (this.app.githubService.dataFetchClient) {
+            this.client = this.app.githubService.dataFetchClient;
+        }
         this.initHookHandler();
         this.app.schedulerService.register(this.config.jobName, this.config.updateTime, (date: Date) => {
             this.update(false);
@@ -137,7 +143,7 @@ export default class DataService extends BaseComponent {
 
     private updateForks(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let forks = await this.app.githubService.client.repo.forks(this.repoData.fullName);
+            let forks = await this.client.repo.forks(this.repoData.fullName);
             forks.forEach(fork => {
                 this.tryAddNewUser(fork.owner.login, fork.owner.id);
             });
@@ -153,7 +159,7 @@ export default class DataService extends BaseComponent {
 
     private updateStars(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let stars = await this.app.githubService.client.repo.stars(this.repoData.fullName);
+            let stars = await this.client.repo.stars(this.repoData.fullName);
             stars.forEach(star => {
                 this.tryAddNewUser((<any>star).user.login, (<any>star).user.id);
             });
@@ -169,7 +175,7 @@ export default class DataService extends BaseComponent {
 
     private updateWatches(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let watches = await this.app.githubService.client.repo.watches(this.repoData.fullName);
+            let watches = await this.client.repo.watches(this.repoData.fullName);
             watches.forEach(watch => {
                 this.tryAddNewUser(watch.login, watch.id);
             });
@@ -182,7 +188,7 @@ export default class DataService extends BaseComponent {
 
     private updateContributors(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let commits = await this.app.githubService.client.repo.commits(this.repoData.fullName);
+            let commits = await this.client.repo.commits(this.repoData.fullName);
             commits = commits.filter(commit => commit.author);
             commits.forEach(commit => {
                 this.tryAddNewUser(commit.author.login, commit.author.id);
@@ -205,7 +211,7 @@ export default class DataService extends BaseComponent {
 
     private updateIssues(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let issues = await this.app.githubService.client.repo.issues(this.repoData.fullName);
+            let issues = await this.client.repo.issues(this.repoData.fullName);
             issues = issues.filter(issue => !issue.pull_request);    // filter pull request
             issues.forEach(issue => {
                 this.tryAddNewUser(issue.user.login, issue.user.id);
@@ -229,7 +235,7 @@ export default class DataService extends BaseComponent {
 
     private updatePullRequests(): Promise<void> {
         return new Promise<void>(async resolve => {
-            let pullRequests = await this.app.githubService.client.repo.pullRequests(this.repoData.fullName);
+            let pullRequests = await this.client.repo.pullRequests(this.repoData.fullName);
             pullRequests.forEach(pullRequest => {
                 this.tryAddNewUser(pullRequest.user.login, pullRequest.user.id);
             });
