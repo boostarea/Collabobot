@@ -12,6 +12,7 @@ class WeeklyReportConfig {
         newContributors: string,
         singleContributor: string,
         noNewContributors: string,
+        tail: string
     }
 };
 
@@ -24,7 +25,7 @@ config.weeklyReportTemplate = {
     header: `# Weekly Report of {{alias}}
 
 This is a weekly report of {{alias}}. It summarizes what have changed in the project during the passed week, including pr merged, new contributors, and more things in the future. 
-It is all done by @{{robot.id}} which is a collaborate robot. See: https://github.com/{{robot.owner}}/{{robot.repo}} .
+It is all done by @{{robot.id}} which is a collaborate robot.
 
 `,
     overview: `## Repo Overview
@@ -68,7 +69,10 @@ Thanks to you all.
 We have no new contributors in this project this week.
 {{alias}} team encourages everything about contribution from community.
 For more details, please refer to https://github.com/{{owner}}/{{repo}}/blob/master/CONTRIBUTING.md .
-`
+`,
+    tail: `
+
+*Note: This robot is supported by [{{robot.repo}}](https://github.com/{{robot.owner}}/{{robot.repo}}).*`
 }
 
 export { WeeklyReportConfig, config };
