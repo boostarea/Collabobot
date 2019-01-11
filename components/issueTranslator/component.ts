@@ -54,7 +54,7 @@ export default class IssueTranslatorComponent extends BaseComponent {
 
             if (bodyTransResult.filter(r => r.detectedSourceLanguage !== this.config.to && r.translatedText !== r.originalText).length !== 0) {
                 updateParams.body = bodyArray.map((line, index) => {
-                    if (bodyTransResult[index].detectedSourceLanguage === this.config.to && bodyTransResult[index].translatedText !== bodyTransResult[index].originalText) return line;
+                    if (bodyTransResult[index].detectedSourceLanguage === this.config.to || bodyTransResult[index].translatedText === bodyTransResult[index].originalText) return line;
                     return `${bodyTransResult[index].translatedText}${os.EOL}// ${line}`;
                 }).join(os.EOL) + this.config.notice;
             }
