@@ -48,7 +48,7 @@ config.labels = [
         name: "kind/question",
         description: "Category issues related to questions or problems",
         color: "f1ee18",
-        keywords: [ "question", "problem", "confusion", "how to", "where to" ]
+        keywords: [ "question", "problem", "confusion", "how to", "where to", "what's", "what is", "what are" ]
     },
     {
         name: "kind/discussion",
