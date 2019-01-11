@@ -37,8 +37,9 @@ export default class WeeklyReportComponent extends BaseComponent {
             let pullRequestOverviewStr = this.generatePullRequestOverview();
             let codeReviewOverviewStr = await this.generateCodeReviewOverview();
             let contributorOverviewStr = this.generateContributorOverview();
+            let tailStr = this.generateTail();
 
-            let weeklyReportStr = `${headerStr}${overviewStr}${pullRequestOverviewStr}${codeReviewOverviewStr}${contributorOverviewStr}`;
+            let weeklyReportStr = `${headerStr}${overviewStr}${pullRequestOverviewStr}${codeReviewOverviewStr}${contributorOverviewStr}${tailStr}`;
             let conn = await this.app.githubService.client.getConnection();
             let title = Utils.stringRenderer(this.config.weeklyReportTemplate.title, {
                 alias: this.app.config.alias,
@@ -178,6 +179,10 @@ export default class WeeklyReportComponent extends BaseComponent {
         } else {
             return Utils.stringRenderer(this.config.weeklyReportTemplate.noNewContributors, this.app.config);
         }
+    }
+
+    private generateTail(): string {
+        return Utils.stringRenderer(this.config.weeklyReportTemplate.tail, this.app.config);
     }
 
     private cancel(): void {
