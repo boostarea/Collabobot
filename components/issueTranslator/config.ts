@@ -8,7 +8,7 @@ let config = new IssueTranslatorComponentConfig();
 config.to = "en";
 config.notice = `
 
-*** WE STRONGLY SUGGEST YOU TO DESCRIBE YOUR ISSUE IN ENGLISH ***`;
+***WE STRONGLY SUGGEST YOU TO DESCRIBE YOUR ISSUE IN ENGLISH***`;
 config.notTranslate = (title: string): boolean => {
     let titleLowerCase = title.toLowerCase();
     let excludesStrings = [ "[weeklyreport]", "[notice]" ];
