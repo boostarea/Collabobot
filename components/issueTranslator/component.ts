@@ -27,11 +27,11 @@ export default class IssueTranslatorComponent extends BaseComponent {
                     return this.app.translateService.translate(line, this.config.to);
                 } else {
                     // no chinese character, return origin
-                    Promise.resolve({
+                    return {
                         translatedText: line,
                         originalText: line,
                         detectedSourceLanguage: this.config.to
-                    });
+                    };
                 }
             }));
             if (!bodyTransResult) return;
