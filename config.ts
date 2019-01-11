@@ -1,6 +1,5 @@
 import _ from "lodash";
 import * as fs from "fs";
-import * as path from "path";
 
 type Config = {
     owner: string,
@@ -30,7 +29,7 @@ let config: Config = {
         repo: "Collabobot",
     },
     token: "%Your robot account token%",
-    optionalTokens: [ "%Your github token for data fetching%" ],
+    optionalTokens: [ ],    // optional token for data fetch
     componentsDir: "./components",
     servicesDir: "./services",
     getConfig<T>(constructor: {new (...args: any): T}): T {
