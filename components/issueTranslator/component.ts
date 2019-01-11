@@ -17,6 +17,8 @@ export default class IssueTranslatorComponent extends BaseComponent {
             let title = issue.title;
             let body = issue.body;
 
+            if (this.config.notTranslate(title)) return;
+
             let titleTransResult = await this.app.translateService.translate(title, this.config.to);
             if (!titleTransResult) return;
 
